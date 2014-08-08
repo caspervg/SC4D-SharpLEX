@@ -8,6 +8,8 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
 
 using SharpLEX.Contracts;
+using SharpLEX.Contracts.Future;
+using SharpLEX.Contracts.History;
 using SharpLEX.Support;
 
 namespace SharpLEX.Endpoints
@@ -83,6 +85,46 @@ namespace SharpLEX.Endpoints
                 DataContractJsonSerializer jsonSerializer = new DataContractJsonSerializer(typeof(User[]), settings);
                 object objResponse = jsonSerializer.ReadObject(response.GetResponseStream());
                 return objResponse as User[];
+            }
+        }
+
+        public Contracts.Future.Download[] getDownloadList()
+        {
+            HttpWebRequest request = WebRequest.Create(Route.DOWNLOAD_LIST.url()) as HttpWebRequest;
+            request.Credentials = Credentials;
+
+            using (HttpWebResponse response = request.GetResponse() as HttpWebResponse)
+            {
+                if (response.StatusCode != HttpStatusCode.OK)
+                {
+                    throw new Exception(String.Format("Server error (HTTP {0}: {1}).", response.StatusCode, response.StatusDescription));
+                }
+                DataContractJsonSerializerSettings settings = new DataContractJsonSerializerSettings();
+                settings.DateTimeFormat = new DateTimeFormat("yyyyMMdd");
+
+                DataContractJsonSerializer jsonSerializer = new DataContractJsonSerializer(typeof(Contracts.Future.Download[]), settings);
+                object objResponse = jsonSerializer.ReadObject(response.GetResponseStream());
+                return objResponse as Contracts.Future.Download[];
+            }
+        }
+
+        public Contracts.History.Download[] getDownloadHistory()
+        {
+            HttpWebRequest request = WebRequest.Create(Route.DOWNLOAD_HISTORY.url()) as HttpWebRequest;
+            request.Credentials = Credentials;
+
+            using (HttpWebResponse response = request.GetResponse() as HttpWebResponse)
+            {
+                if (response.StatusCode != HttpStatusCode.OK)
+                {
+                    throw new Exception(String.Format("Server error (HTTP {0}: {1}).", response.StatusCode, response.StatusDescription));
+                }
+                DataContractJsonSerializerSettings settings = new DataContractJsonSerializerSettings();
+                settings.DateTimeFormat = new DateTimeFormat("yyyyMMdd");
+
+                DataContractJsonSerializer jsonSerializer = new DataContractJsonSerializer(typeof(Contracts.History.Download[]), settings);
+                object objResponse = jsonSerializer.ReadObject(response.GetResponseStream());
+                return objResponse as Contracts.History.Download[];
             }
         }
     }

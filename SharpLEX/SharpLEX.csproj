@@ -41,6 +41,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Contracts\DownloadHistory.cs" />
+    <Compile Include="Contracts\DownloadList.cs" />
     <Compile Include="Contracts\User.cs" />
     <Compile Include="Endpoints\Routes.cs" />
     <Compile Include="Endpoints\UserRoute.cs" />
