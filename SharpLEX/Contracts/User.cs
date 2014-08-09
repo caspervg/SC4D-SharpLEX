@@ -1,35 +1,22 @@
 ﻿using System;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Json;
+using RestSharp.Deserializers;
 
 namespace SharpLEX.Contracts
 {
-    [DataContract]
     public class User
     {
-        [DataMember(Name = "id")]
         public int Id { get; private set; }
-        [DataMember(Name = "fullname")]
         public string FullName { get; private set; }
-        [DataMember(Name = "username")]
-        public string UserName { get; private set; }
-        [DataMember(Name = "user_level")]
+        public string Username { get; private set; }
         public int UserLevel { get; private set; }
-        [DataMember(Name = "email")]
         public string Email { get; private set; }
-        [DataMember(Name = "login_count")]
+        public DateTime Registered { get; private set; }
         public int LoginCount { get; private set; }
-        [DataMember(Name = "is_active")]
-        public bool Active { get; private set; }
-        [DataMember(Name = "is_donator")]
-        public bool Donator { get; private set; }
-        [DataMember(Name = "is_rater")]
-        public bool Rater { get; private set; }
-        [DataMember(Name = "is_uploader")]
-        public bool Uploader { get; private set; }
-        [DataMember(Name = "is_author")]
-        public bool Author { get; private set; }
-        [DataMember(Name = "is_admin")]
-        public bool Admin { get; private set; }
+        public bool IsActive { get; private set; }
+        public bool IsDonator { get; private set; }
+        public bool IsRater { get; private set; }
+        public bool IsUploader { get; private set; }
+        public bool IsAuthor { get; private set; }
+        public bool IsAdmin { get; private set; }
     }
 }

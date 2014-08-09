@@ -18,19 +18,18 @@ namespace SharpLEX
 
     public static class Routes
     {
-        private static readonly string Base = "http://sc4devotion.com/csxlex/api/";
-        private static readonly string Version = "v2";
+        private static readonly string location = "http://sc4devotion.com/csxlex/api/";
+        private static readonly string version = "v2";
 
-        public static string url(this Route r) 
+        public static string endpoint(this Route r) 
         {
-            RouteAttribute Attribute = GetAttribute(r);
-            return Base + Version + Attribute.Endpoint;
+            RouteAttribute attribute = GetAttribute(r);
+            return attribute.Endpoint;
         }
 
-        public static string url(this Route r, int id)
+        public static string url()
         {
-            RouteAttribute Attribute = GetAttribute(r);
-            return Base + Version + String.Format(Attribute.Endpoint, id);
+            return location + version;
         }
 
         private static RouteAttribute GetAttribute(Route r)
@@ -48,7 +47,7 @@ namespace SharpLEX
     {
         // User Routes
         [RouteAttribute("/user")] ME,
-        [RouteAttribute("/user/{0}")] USER,
+        [RouteAttribute("/user/{id}")] USER,
         [RouteAttribute("/user/all")] ALL_USER,
         [RouteAttribute("/user/download-list")] DOWNLOAD_LIST,
         [RouteAttribute("/user/download-history")] DOWNLOAD_HISTORY,
@@ -56,13 +55,13 @@ namespace SharpLEX
         [RouteAttribute("/user/activate")] ACTIVATE,
 
         // Lot Routes
-        [RouteAttribute("/lot/{0}")] LOT,
+        [RouteAttribute("/lot/{id}")] LOT,
         [RouteAttribute("/lot/all")] ALL_LOT,
-        [RouteAttribute("/lot/{0}/download")] DOWNLOAD_LOT,
-        [RouteAttribute("/lot/{0}/download-list")] DOWNLOAD_LIST_LOT,
-        [RouteAttribute("/lot/{0}/comment")] COMMENT,
-        [RouteAttribute("/lot/{0}/dependency")] DEPENDENCY,
-        [RouteAttribute("/lot/{0}/dependency-string")] DEPENDENCY_STRING,
+        [RouteAttribute("/lot/{id}/download")] DOWNLOAD_LOT,
+        [RouteAttribute("/lot/{id}/download-list")] DOWNLOAD_LIST_LOT,
+        [RouteAttribute("/lot/{id}/comment")] COMMENT,
+        [RouteAttribute("/lot/{id}/dependency")] DEPENDENCY,
+        [RouteAttribute("/lot/{id}/dependency-string")] DEPENDENCY_STRING,
 
         // Search Routes
         [RouteAttribute("/search")] SEARCH,

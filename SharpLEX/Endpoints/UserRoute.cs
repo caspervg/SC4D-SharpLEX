@@ -1,131 +1,64 @@
 ﻿using System;
-using System.Net;
-using System.Text;
-using System.IO;
 using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Json;
+
+using RestSharp;
 
 using SharpLEX.Contracts;
 using SharpLEX.Contracts.Future;
 using SharpLEX.Contracts.History;
-using SharpLEX.Support;
 
 namespace SharpLEX.Endpoints
 {
     public class UserRoute
     {
-        private NetworkCredential Credentials;
+        private HttpBasicAuthenticator auth;
 
-        public UserRoute (NetworkCredential cred) {
-            this.Credentials = cred;
+        public UserRoute (string username, string password) {
+            this.auth = new HttpBasicAuthenticator(username, password);
         }
 
         public User getMe()
         {
-            HttpWebRequest request = WebRequest.Create(Route.ME.url()) as HttpWebRequest;
-            request.Credentials = Credentials;
+            var api = new LexApi(auth);
+            var request = new RestRequest(Route.ME.endpoint());
 
-            using (HttpWebResponse response = request.GetResponse() as HttpWebResponse)
-            {
-                if (response.StatusCode != HttpStatusCode.OK)
-                {
-                    throw new Exception(String.Format("Server error (HTTP {0}: {1}).", response.StatusCode, response.StatusDescription));
-                }                    
-                DataContractJsonSerializerSettings settings = new DataContractJsonSerializerSettings();
-                settings.DateTimeFormat = new DateTimeFormat("yyyyMMdd");
-
-                DataContractJsonSerializer jsonSerializer = new DataContractJsonSerializer(typeof(User), settings);
-                object objResponse = jsonSerializer.ReadObject(response.GetResponseStream());
-                return objResponse as User;
-            }
+            return api.Execute<User>(request);
         }
 
         public User getUser(int userid)
         {
-            HttpWebRequest request = WebRequest.Create(Route.USER.url(userid)) as HttpWebRequest;
-            request.Credentials = Credentials;
+            var api = new LexApi(auth);
+            var request = new RestRequest(Route.USER.endpoint());
+            request.AddParameter("id", userid, ParameterType.UrlSegment);
 
-            using (HttpWebResponse response = request.GetResponse() as HttpWebResponse)
-            {
-                if (response.StatusCode != HttpStatusCode.OK)
-                {
-                    throw new Exception(String.Format("Server error (HTTP {0}: {1}).", response.StatusCode, response.StatusDescription));
-                }
-                DataContractJsonSerializerSettings settings = new DataContractJsonSerializerSettings();
-                settings.DateTimeFormat = new DateTimeFormat("yyyyMMdd");
-
-                DataContractJsonSerializer jsonSerializer = new DataContractJsonSerializer(typeof(User), settings);
-                object objResponse = jsonSerializer.ReadObject(response.GetResponseStream());
-                return objResponse as User;
-            }
+            return api.Execute<User>(request);
         }
 
-        public User[] getAllUsers(bool concise, int start, int amount)
+        public List<User> getAllUsers(bool concise, int start, int amount)
         {
-            NameValueCollection parameters = new NameValueCollection();
-            parameters.Add("concise", concise.ToString());
-            parameters.Add("start", start.ToString());
-            parameters.Add("amount", amount.ToString());
-            var url = Util.CreateUrl(Route.ALL_USER.url(), parameters);
+            var api = new LexApi(auth);
+            var request = new RestRequest(Route.ALL_USER.endpoint());
+            request.AddParameter("concise", concise);
+            request.AddParameter("start", start);
+            request.AddParameter("amount", amount);
 
-            HttpWebRequest request = WebRequest.Create(url) as HttpWebRequest;
-            request.Credentials = Credentials;
-
-            using (HttpWebResponse response = request.GetResponse() as HttpWebResponse)
-            {
-                if (response.StatusCode != HttpStatusCode.OK)
-                {
-                    throw new Exception(String.Format("Server error (HTTP {0}: {1}).", response.StatusCode, response.StatusDescription));
-                }
-                DataContractJsonSerializerSettings settings = new DataContractJsonSerializerSettings();
-                settings.DateTimeFormat = new DateTimeFormat("yyyyMMdd");
-
-                DataContractJsonSerializer jsonSerializer = new DataContractJsonSerializer(typeof(User[]), settings);
-                object objResponse = jsonSerializer.ReadObject(response.GetResponseStream());
-                return objResponse as User[];
-            }
+            return api.Execute<List<User>>(request);
         }
 
-        public Contracts.Future.Download[] getDownloadList()
+        public List<Contracts.Future.Download> getDownloadList()
         {
-            HttpWebRequest request = WebRequest.Create(Route.DOWNLOAD_LIST.url()) as HttpWebRequest;
-            request.Credentials = Credentials;
+            var api = new LexApi(auth);
+            var request = new RestRequest(Route.DOWNLOAD_LIST.endpoint());
 
-            using (HttpWebResponse response = request.GetResponse() as HttpWebResponse)
-            {
-                if (response.StatusCode != HttpStatusCode.OK)
-                {
-                    throw new Exception(String.Format("Server error (HTTP {0}: {1}).", response.StatusCode, response.StatusDescription));
-                }
-                DataContractJsonSerializerSettings settings = new DataContractJsonSerializerSettings();
-                settings.DateTimeFormat = new DateTimeFormat("yyyyMMdd");
-
-                DataContractJsonSerializer jsonSerializer = new DataContractJsonSerializer(typeof(Contracts.Future.Download[]), settings);
-                object objResponse = jsonSerializer.ReadObject(response.GetResponseStream());
-                return objResponse as Contracts.Future.Download[];
-            }
+            return api.Execute<List<Contracts.Future.Download>>(request);
         }
 
-        public Contracts.History.Download[] getDownloadHistory()
+        public List<Contracts.History.Download> getDownloadHistory()
         {
-            HttpWebRequest request = WebRequest.Create(Route.DOWNLOAD_HISTORY.url()) as HttpWebRequest;
-            request.Credentials = Credentials;
+            var api = new LexApi(auth);
+            var request = new RestRequest(Route.DOWNLOAD_HISTORY.endpoint());
 
-            using (HttpWebResponse response = request.GetResponse() as HttpWebResponse)
-            {
-                if (response.StatusCode != HttpStatusCode.OK)
-                {
-                    throw new Exception(String.Format("Server error (HTTP {0}: {1}).", response.StatusCode, response.StatusDescription));
-                }
-                DataContractJsonSerializerSettings settings = new DataContractJsonSerializerSettings();
-                settings.DateTimeFormat = new DateTimeFormat("yyyyMMdd");
-
-                DataContractJsonSerializer jsonSerializer = new DataContractJsonSerializer(typeof(Contracts.History.Download[]), settings);
-                object objResponse = jsonSerializer.ReadObject(response.GetResponseStream());
-                return objResponse as Contracts.History.Download[];
-            }
+            return api.Execute<List<Contracts.History.Download>>(request);
         }
     }
 }

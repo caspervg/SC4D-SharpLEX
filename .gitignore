@@ -157,3 +157,6 @@ $RECYCLE.BIN/
 
 # App.config
 App.config
+
+# Packages
+packages/
