@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using System.IO;
 using System.Configuration;
 using System.Collections.Generic;
 
@@ -37,6 +38,8 @@ namespace SharpLEXTests
             Assert.AreEqual("Casper Vg", user.FullName);
             Assert.AreEqual(true, user.IsAdmin);
             Assert.AreEqual(new DateTime(2007, 06, 02), user.Registered);
+
+            ObjectDumper.Dumper.Dump(user, "Me", Console.Out);
         }
 
         [TestMethod]
@@ -48,6 +51,8 @@ namespace SharpLEXTests
 
             Assert.AreEqual("ADMIN", user.Username);
             Assert.AreEqual(1, user.Id);
+
+            ObjectDumper.Dumper.Dump(user, "User", Console.Out);
         }
 
         [TestMethod]
@@ -59,6 +64,8 @@ namespace SharpLEXTests
 
             Assert.AreEqual(1, users[0].Id);
             Assert.AreEqual(10, users.Count);
+
+            ObjectDumper.Dumper.Dump(users, "AllUsers", Console.Out);
         }
 
         [TestMethod]
@@ -71,6 +78,8 @@ namespace SharpLEXTests
             Assert.AreEqual(1, downloadList.Count);
             Assert.AreEqual("CP Map - St Elwood", downloadList[0].Lot.Name);
             Assert.AreEqual(13893494, downloadList[0].Record.Id);
+
+            ObjectDumper.Dumper.Dump(downloadList, "GetDownloadList", Console.Out);
         }
 
         [TestMethod]
@@ -82,6 +91,8 @@ namespace SharpLEXTests
 
             Assert.AreEqual("BSC Mega Props DAE Vol01", downloadHistory[0].Lot.Name);
             Assert.AreEqual(12850364, downloadHistory[0].Record.Id);
+
+            ObjectDumper.Dumper.Dump(downloadHistory, "GetDownloadHistory", Console.Out);
         }
     }
 }
