@@ -37,5 +37,19 @@ namespace SharpLEX.Endpoints
 
             return response.Data;
         }
+
+        public void Execute(RestRequest request)
+        {
+            var client = new RestClient(location + version);
+            client.Authenticator = _auth;
+
+            var response = client.Execute(request);
+
+            if (response.ErrorException != null)
+            {
+                const string message = "Error retrieving LEX API response. Check inner details for more info.";
+                throw new ApplicationException(message, response.ErrorException);
+            }
+        }
     }
 }

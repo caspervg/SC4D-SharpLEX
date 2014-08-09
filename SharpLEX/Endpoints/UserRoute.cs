@@ -60,5 +60,28 @@ namespace SharpLEX.Endpoints
 
             return api.Execute<List<Contracts.History.Download>>(request);
         }
+
+        public void doRegistration(string username, string password, string email, string fullname)
+        {
+            var api = new LexApi(auth);
+            var request = new RestRequest(Route.REGISTER.endpoint());
+            request.Method = Method.POST;
+            request.AddParameter("username", username);
+            request.AddParameter("password_1", password);
+            request.AddParameter("password_2", password);
+            request.AddParameter("email", email);
+            if (fullname != null) request.AddParameter("fullname", fullname);
+
+            api.Execute(request);
+        }
+
+        public void doActivation(string key)
+        {
+            var api = new LexApi(auth);
+            var request = new RestRequest(Route.ACTIVATE.endpoint());
+            request.AddParameter("activation_key", key);
+
+            api.Execute(request);
+        }
     }
 }
