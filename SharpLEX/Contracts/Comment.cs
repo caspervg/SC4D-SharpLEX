@@ -4,7 +4,7 @@ using RestSharp.Deserializers;
 
 namespace SharpLEX.Contracts
 {
-    class Comment
+    public class Comment
     {
         public int Id { get; private set; }
         [DeserializeAs(Name = "user")]

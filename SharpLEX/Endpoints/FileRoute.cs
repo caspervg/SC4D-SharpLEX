@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Net;
 
 using RestSharp;
 
@@ -17,7 +19,7 @@ namespace SharpLEX.Endpoints
             this.auth = new HttpBasicAuthenticator(username, password);
         }
 
-        public File getFile(int fileid)
+        public File GetFile(int fileid)
         {
             var api = new LexApi(auth);
             var request = new RestRequest(Route.LOT.endpoint());
@@ -26,71 +28,109 @@ namespace SharpLEX.Endpoints
             return api.Execute<File>(request);
         }
 
-        public List<User> getAllUsers(bool concise, int start, int amount)
+        public List<File> GetAllFiles()
         {
             var api = new LexApi(auth);
-            var request = new RestRequest(Route.ALL_USER.endpoint());
-            request.AddParameter("concise", concise);
-            request.AddParameter("start", start);
-            request.AddParameter("amount", amount);
+            var request = new RestRequest(Route.ALL_LOT.endpoint());
 
-            return api.Execute<List<User>>(request);
+            return api.Execute<List<File>>(request);
         }
 
-        public List<Contracts.Future.Download> getDownloadList()
+        public void DownloadFile(int fileid, string directory)
         {
             var api = new LexApi(auth);
-            var request = new RestRequest(Route.DOWNLOAD_LIST.endpoint());
+            var request = new RestRequest(Route.DOWNLOAD_LOT.endpoint());
+            request.AddParameter("id", fileid, ParameterType.UrlSegment);
 
-            return api.Execute<List<Contracts.Future.Download>>(request);
+            RestResponse response = api.ExecuteWithResponse(request);
+            var contentDisposition = response.Headers.FirstOrDefault(h => h.Name == "Content-Disposition");
+            var fileName = "file-" + fileid + ".zip";
+
+            if (contentDisposition != null)
+            {
+                // Content-Disposition: attachment; filename="Install_CSX Farm SF - Veronique.zip"
+                fileName = contentDisposition.ToString().Split(';')[1].Split('=')[1].Replace('\"', ' ').Trim();
+            }
+
+            try {
+                System.IO.File.WriteAllBytes(directory + fileName, response.RawBytes);
+            } catch (Exception ex) {
+                const string message = "Error retrieving the downloaded file. Check inner details for more info.";
+                throw new ApplicationException(message, ex);
+            }
         }
 
-        public List<Contracts.History.Download> getDownloadHistory()
-        {
-            var api = new LexApi(auth);
-            var request = new RestRequest(Route.DOWNLOAD_HISTORY.endpoint());
-
-            return api.Execute<List<Contracts.History.Download>>(request);
-        }
-
-        public void putDownloadList(int lotid)
+        public void AddToDownloadList(int fileid)
         {
             var api = new LexApi(auth);
             var request = new RestRequest(Route.DOWNLOAD_LIST_LOT.endpoint());
-            request.AddParameter("id", lotid, ParameterType.UrlSegment);
+            request.AddParameter("id", fileid, ParameterType.UrlSegment);
 
             api.Execute(request);
         }
 
-        public void deleteDownloadList(int lotid)
+        public void DeleteFromDownloadList(int fileid)
         {
             var api = new LexApi(auth);
             var request = new RestRequest(Route.DOWNLOAD_LIST_LOT.endpoint());
             request.Method = Method.DELETE;
-            request.AddParameter("id", lotid, ParameterType.UrlSegment);
+            request.AddParameter("id", fileid, ParameterType.UrlSegment);
 
             api.Execute(request);
         }
 
-        public void doRegistration(string username, string password, string email, string fullname)
+        public List<Comment> GetComments(int fileid)
         {
             var api = new LexApi(auth);
-            var request = new RestRequest(Route.REGISTER.endpoint());
-            request.Method = Method.POST;
-            request.AddParameter("username", username);
-            request.AddParameter("password_1", password);
-            request.AddParameter("password_2", password);
-            request.AddParameter("email", email);
-            if (fullname != null) request.AddParameter("fullname", fullname);
+            var request = new RestRequest(Route.COMMENT.endpoint());
+            request.AddParameter("id", fileid, ParameterType.UrlSegment);
+
+            return api.Execute<List<Comment>>(request);
+        }
+
+        public void AddComment(int fileid, int rating, string comment)
+        {
+            var api = new LexApi(auth);
+            var request = new RestRequest(Route.COMMENT.endpoint());
+            request.AddParameter("id", fileid, ParameterType.UrlSegment);
+
+            if (rating > 0) {
+                request.AddParameter("rating", rating);
+            }
+
+            if (comment.Length > 0)
+            {
+                request.AddParameter("comment", comment);
+            }
 
             api.Execute(request);
         }
 
-        public void doActivation(string key)
+        public DependencyOverview GetDependencyOverview(int fileid)
         {
             var api = new LexApi(auth);
-            var request = new RestRequest(Route.ACTIVATE.endpoint());
-            request.AddParameter("activation_key", key);
+            var request = new RestRequest(Route.DEPENDENCY.endpoint());
+            request.AddParameter("id", fileid, ParameterType.UrlSegment);
+
+            return api.Execute<DependencyOverview>(request);
+        }
+
+        public string GetDependencyString(int fileid)
+        {
+            var api = new LexApi(auth);
+            var request = new RestRequest(Route.DEPENDENCY_STRING.endpoint());
+            request.AddParameter("id", fileid, ParameterType.UrlSegment);
+
+            DependencyString depString = api.Execute<DependencyString>(request);
+            return depString.Dependency;
+        }
+
+        public void UpdateDependencyString(int fileid, string dependencies)
+        {
+            var api = new LexApi(auth);
+            var request = new RestRequest(Route.DEPENDENCY_STRING.endpoint());
+            request.AddParameter("id", fileid, ParameterType.UrlSegment);
+            request.AddParameter("string", dependencies);
 
             api.Execute(request);
         }

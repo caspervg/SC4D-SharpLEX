@@ -6,7 +6,7 @@ namespace SharpLEX.Endpoints
     public class LexApi
     {
         private static readonly string location = "http://sc4devotion.com/csxlex/api/";
-        private static readonly string version = "v2";
+        private static readonly string version = "v3";
 
         readonly HttpBasicAuthenticator _auth;
 
@@ -50,6 +50,22 @@ namespace SharpLEX.Endpoints
                 const string message = "Error retrieving LEX API response. Check inner details for more info.";
                 throw new ApplicationException(message, response.ErrorException);
             }
+        }
+
+        public RestResponse ExecuteWithResponse(RestRequest request)
+        {
+            var client = new RestClient(location + version);
+            client.Authenticator = _auth;
+
+            var response = client.Execute(request);
+
+            if (response.ErrorException != null)
+            {
+                const string message = "Error retrieving LEX API response. Check inner details for more info.";
+                throw new ApplicationException(message, response.ErrorException);
+            }
+
+            return (RestResponse) response;
         }
     }
 }

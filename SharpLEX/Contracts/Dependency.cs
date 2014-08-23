@@ -36,4 +36,9 @@ namespace SharpLEX.Contracts
         public int Count { get; private set; }
         public List<Dependency> List { get; private set; }
     }
+
+    public class DependencyString
+    {
+        public string Dependency { get; private set; }
+    }
 }
