@@ -53,6 +53,25 @@ namespace SharpLEX.Endpoints
             return api.Execute<List<Contracts.History.Download>>(request);
         }
 
+        public void putDownloadList(int lotid)
+        {
+            var api = new LexApi(auth);
+            var request = new RestRequest(Route.DOWNLOAD_LIST_LOT.endpoint());
+            request.AddParameter("id", lotid, ParameterType.UrlSegment);
+
+            api.Execute(request);
+        }
+
+        public void deleteDownloadList(int lotid)
+        {
+            var api = new LexApi(auth);
+            var request = new RestRequest(Route.DOWNLOAD_LIST_LOT.endpoint());
+            request.Method = Method.DELETE;
+            request.AddParameter("id", lotid, ParameterType.UrlSegment);
+
+            api.Execute(request);
+        }
+
         public void doRegistration(string username, string password, string email, string fullname)
         {
             var api = new LexApi(auth);
