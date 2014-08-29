@@ -47,12 +47,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Contracts\Category.cs" />
     <Compile Include="Contracts\Comment.cs" />
     <Compile Include="Contracts\Dependency.cs" />
     <Compile Include="Contracts\DownloadHistory.cs" />
     <Compile Include="Contracts\DownloadList.cs" />
     <Compile Include="Contracts\File.cs" />
     <Compile Include="Contracts\User.cs" />
+    <Compile Include="Endpoints\Filters.cs" />
+    <Compile Include="Endpoints\SearchRoute.cs" />
     <Compile Include="Endpoints\FileRoute.cs" />
     <Compile Include="LexApi.cs" />
     <Compile Include="Endpoints\Routes.cs" />
