@@ -21,7 +21,7 @@ namespace SharpLEX.Contracts.History
     {
         public int Id { get; private set; }
         public string Name { get; private set; }
-        public string Verion { get; private set; }
+        public string Version { get; private set; }
         public string Author { get; private set; }
 
         [DeserializeAs(Name = "update_date")]

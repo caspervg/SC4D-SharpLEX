@@ -18,7 +18,7 @@ namespace SharpLEX.Contracts.Future
     {
         public int Id { get; private set; }
         public string Name { get; private set; }
-        public string Verion { get; private set; }
+        public string Version { get; private set; }
         public string Author { get; private set; }
         [DeserializeAs(Name = "update_date")]
         public DateTime? LastUpdated { get; private set; }
